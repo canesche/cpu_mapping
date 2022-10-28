@@ -51,6 +51,7 @@ class Graph {
         vector<int> get_nodes();
         string get_name_node(int u);
         string get_name_op(int u);
+        string get_name_value(int u);
         vector<int> get_predecessors(int u);
         vector<vector<int>> get_fanin();
         vector<vector<int>> get_fanout();
@@ -67,6 +68,7 @@ class Graph {
         map<int,vector<int>> node_out_degree;
         map<int,string> name_label;
         map<int,string> op_label;
+        map<int,string> value_label;
 };
 
 #endif

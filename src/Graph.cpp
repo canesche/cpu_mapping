@@ -10,6 +10,12 @@ Graph::Graph() {
 	boost::property_map<graph_t, boost::vertex_name_t>::type op = get(boost::vertex_name, this->graph);
 	this->dp.property("op", op);
 
+	boost::property_map<graph_t, boost::vertex_name_t>::type label = get(boost::vertex_name, this->graph);
+	this->dp.property("label", label);
+
+	boost::property_map<graph_t, boost::vertex_name_t>::type value = get(boost::vertex_name, this->graph);
+	this->dp.property("value", value);
+
 	boost::property_map<graph_t, boost::edge_weight_t>::type weight = get(boost::edge_weight, this->graph);
 	this->dp.property("weight", weight);
 
@@ -31,6 +37,9 @@ Graph::Graph(string filename) {
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type label = get(boost::vertex_name, this->graph);
 	this->dp.property("label", label);
+
+	boost::property_map<graph_t, boost::vertex_name_t>::type value = get(boost::vertex_name, this->graph);
+	this->dp.property("value", value);
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type op = get(boost::vertex_name, this->graph);
 	this->dp.property("op", op);
@@ -69,6 +78,7 @@ Graph::Graph(string filename) {
 		++next;
 		name_label[*vi] = name[*vi];
 		op_label[*vi] = op[*vi];
+		value_label[*vi] = value[*vi];
 		this->nodes.push_back(*vi);
 	}
 }
@@ -82,6 +92,7 @@ Graph::Graph(const Graph &g) {
 	this->node_out_degree = g.node_out_degree;
 	this->name_label = g.name_label;
 	this->op_label = g.op_label;
+	this->value_label = g.value_label;
 }
 
 Graph::~Graph() {
@@ -139,6 +150,10 @@ string Graph::get_name_node(int u) {
 
 string Graph::get_name_op(int u) {
 	return this->op_label[u];
+}
+
+string Graph::get_name_value(int u) {
+	return this->value_label[u];
 }
 
 vector<int> Graph::get_predecessors(int u) {

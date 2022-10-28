@@ -23,21 +23,16 @@ void output_graph_yott(
     printf("digraph g {\n");
 
     for (int j = 0; j < g.num_nodes(); ++j) {
-        printf("%d [label=\"%s\";op=\"%s\";]\n", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str());
+        printf("%d [label = %s;op = %s;value = %s;]\n", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str(), g.get_name_value(j).c_str());
     }
 
     for (int j = 0; j < EDGE_SIZE; ++j) {
         a = vector_edges[idx*EDGE_SIZE+j].v0;
         b = vector_edges[idx*EDGE_SIZE+j].v1;
         dir = vector_edges[idx*EDGE_SIZE+j].v2;
-        if (dir == 0) printf("%d -> %d [port=%d", a, b, port[b]++);
-        else printf("%d -> %d [port=%d", b, a, port[a]++);
-
-        value = edges_cost[idx][make_pair(a,b)];
-        if (value > 1) {
-            printf(" color=red, label=%d", value);
-        }
-        printf("]\n");
+        value = edges_cost[idx][make_pair(a,b)]-1;
+        if (dir == 0) printf("%d -> %d [port=%d; weight=%d;]\n", a, b, port[b]++, value);
+        else printf("%d -> %d [port=%d; weight=%d;]\n", b, a, port[a]++, value);
     }
     printf("}\n");
 } 
@@ -57,20 +52,14 @@ void output_graph_sa(
     printf("digraph g {\n");
 
     for (int j = 0; j < g.num_nodes(); ++j) {
-        printf("%d [label=\"%s\";op=\"%s\";]\n", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str());
+        printf("%d [label = %s; op= %s;]\n", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str());
     }
 
     for (int j = 0; j < EDGE_SIZE; ++j) {
         a = vector_edges[j].first;
         b = vector_edges[j].second;
-        
-        printf("%d -> %d [port=%d", a, b, port[b]++);
-
-        value = edges_cost[idx][make_pair(a,b)];
-        if (value > 1) {
-            printf(" color=red, label=%d", value);
-        }
-        printf("]\n");
+        value = edges_cost[idx][make_pair(a,b)]-1;
+        printf("%d -> %d [port=%d; weight=%d];\n", a, b, port[b]++, value);
     }
     printf("}\n");
 }
