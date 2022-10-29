@@ -45,7 +45,7 @@ const unsigned int get_best_index_yott (
             dir = vector_edges[i*EDGE_SIZE+j].v2;
             sum_local += edges_cost[i][make_pair(a,b)];
         }
-        cout << i << " " << sum_local << endl;
+        //cout << i << " " << sum_local << endl;
         if (sum_local < sum_global && successfullRoutings[i]) {
             sum_global = sum_local;
             best_index = i;

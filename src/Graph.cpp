@@ -30,13 +30,20 @@ Graph::Graph() {
 Graph::Graph(string filename) {
 
     this->graph = graph_t(0);
-	this->dp = boost::dynamic_properties(boost::ignore_other_properties);
+	this->dp = boost::dynamic_properties();
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type name = get(boost::vertex_name, this->graph);
 	this->dp.property("node_id", name);
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type label = get(boost::vertex_name, this->graph);
 	this->dp.property("label", label);
+
+	v_iter vi, vi_end, next;
+	boost::tie(vi, vi_end) = vertices(this->graph);
+	for (next = vi; vi != vi_end; vi = next) {
+		//cout << "node " << *vi << " " << label[*vi] << endl;
+	}
+
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type value = get(boost::vertex_name, this->graph);
 	this->dp.property("value", value);
@@ -47,10 +54,14 @@ Graph::Graph(string filename) {
 	boost::property_map<graph_t, boost::edge_weight_t>::type weight = get(boost::edge_weight, this->graph);
 	this->dp.property("weight", weight);
 
+	boost::property_map<graph_t, boost::edge_weight_t>::type port = get(boost::edge_weight, this->graph);
+	this->dp.property("port", weight);
+
 	// Use ref_property_map to turn a graph property into a property map
 	//ref_property_map<graph_t*, string> gname(get_property(this->graph, graph_name));
 	
 	//this->dp.property("name", gname);
+
 
 	if (filename.substr(filename.find_last_of(".") + 1) == "dot") {
     	ifstream dot_file = ifstream(filename);
@@ -72,13 +83,14 @@ Graph::Graph(string filename) {
 	}
 
 	// set nodes
-	v_iter vi, vi_end, next;
+	//v_iter vi, vi_end, next;
 	boost::tie(vi, vi_end) = vertices(this->graph);
 	for (next = vi; vi != vi_end; vi = next) {
 		++next;
-		name_label[*vi] = name[*vi];
-		op_label[*vi] = op[*vi];
-		value_label[*vi] = value[*vi];
+		name_label[*vi] = label[*vi];
+		cout << label[*vi] << endl;
+		//op_label[*vi] = op[*vi];
+		//value_label[*vi] = value[*vi];
 		this->nodes.push_back(*vi);
 	}
 }
