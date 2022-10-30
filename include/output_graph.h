@@ -23,7 +23,9 @@ void output_graph_yott(
     printf("digraph g {\n");
 
     for (int j = 0; j < g.num_nodes(); ++j) {
-        printf("%d [label = %s;op = %s;value = %s;]\n", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str(), g.get_name_value(j).c_str());
+        printf("%d [label = %s;op = %s;", j, g.get_name_node(j).c_str(), g.get_name_op(j).c_str());
+        if (!g.get_name_value(j).empty()) printf("value = %s;]\n",g.get_name_value(j).c_str());
+        else printf("]\n");
     }
 
     for (int j = 0; j < EDGE_SIZE; ++j) {

@@ -42,6 +42,7 @@ class Graph {
         void print();
         void print_graph_number();
         void write(string filename="test.dot");
+        void collect_input(string filename, string str_input, map<int,string> &new_map);
         //vertex_t add_node(Vertex u); // ps da vida kkk
         const int num_nodes();
         void add_edge(vertex_t u, vertex_t v);

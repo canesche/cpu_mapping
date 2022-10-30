@@ -27,29 +27,60 @@ Graph::Graph() {
 	read_graphviz(gvgraph, this->graph, this->dp, "node_id");
 }
 
-Graph::Graph(string filename) {
-
-    this->graph = graph_t(0);
-	this->dp = boost::dynamic_properties();
+void Graph::collect_input(string filename, string str_input, map<int,string> &new_map) {
+	this->graph = graph_t(0);
+	this->dp = boost::dynamic_properties(ignore_other_properties);
 
 	boost::property_map<graph_t, boost::vertex_name_t>::type name = get(boost::vertex_name, this->graph);
-	this->dp.property("node_id", name);
+	this->dp.property(str_input, name);
 
-	boost::property_map<graph_t, boost::vertex_name_t>::type label = get(boost::vertex_name, this->graph);
-	this->dp.property("label", label);
+	if (filename.substr(filename.find_last_of(".") + 1) == "dot") {
+    	ifstream dot_file = ifstream(filename);
+		read_graphviz(dot_file, this->graph, this->dp, "");
+	} else {
+		cout << "ERROR: This file " << filename << " is not a dot file!" << endl;
+	}
 
+	// set nodes
 	v_iter vi, vi_end, next;
 	boost::tie(vi, vi_end) = vertices(this->graph);
 	for (next = vi; vi != vi_end; vi = next) {
-		//cout << "node " << *vi << " " << label[*vi] << endl;
+		++next;
+		new_map[*vi] = name[*vi]; 
+	}
+}
+
+Graph::Graph(string filename) {
+
+    this->graph = graph_t(0);
+	this->dp = boost::dynamic_properties(ignore_other_properties);
+
+	
+
+	collect_input(filename, "label", name_label);
+
+	// set edges
+	int u, v, size;
+	pair<e_iter,e_iter> it;
+	vector<pair<int,int>> aux_inv;
+	for(it = boost::edges(this->graph); it.first != it.second; ++it.first) {
+		u = source(*it.first, this->graph);
+		v = target(*it.first, this->graph);
+		this->edges.push_back(make_pair(u, v));
+		if (u != v) node_in_degree[v].push_back(u);
+		if (u != v) node_out_degree[u].push_back(v);
 	}
 
+	// set nodes
+	v_iter vi, vi_end, next;
+	boost::tie(vi, vi_end) = vertices(this->graph);
+	for (next = vi; vi != vi_end; vi = next) {
+		++next;
+		this->nodes.push_back(*vi);
+	}
 
-	boost::property_map<graph_t, boost::vertex_name_t>::type value = get(boost::vertex_name, this->graph);
-	this->dp.property("value", value);
-
-	boost::property_map<graph_t, boost::vertex_name_t>::type op = get(boost::vertex_name, this->graph);
-	this->dp.property("op", op);
+	collect_input(filename, "value", value_label);
+	collect_input(filename, "op", op_label);
 
 	boost::property_map<graph_t, boost::edge_weight_t>::type weight = get(boost::edge_weight, this->graph);
 	this->dp.property("weight", weight);
@@ -70,29 +101,8 @@ Graph::Graph(string filename) {
 		cout << "ERROR: This file " << filename << " is not a dot file!" << endl;
 	}
 
-	// set edges
-	int u, v, size;
-	pair<e_iter,e_iter> it;
-	vector<pair<int,int>> aux_inv;
-	for(it = boost::edges(this->graph); it.first != it.second; ++it.first) {
-		u = source(*it.first, this->graph);
-		v = target(*it.first, this->graph);
-		this->edges.push_back(make_pair(u, v));
-		if (u != v) node_in_degree[v].push_back(u);
-		if (u != v) node_out_degree[u].push_back(v);
-	}
 
-	// set nodes
-	//v_iter vi, vi_end, next;
-	boost::tie(vi, vi_end) = vertices(this->graph);
-	for (next = vi; vi != vi_end; vi = next) {
-		++next;
-		name_label[*vi] = label[*vi];
-		cout << label[*vi] << endl;
-		//op_label[*vi] = op[*vi];
-		//value_label[*vi] = value[*vi];
-		this->nodes.push_back(*vi);
-	}
+	
 }
 
 Graph::Graph(const Graph &g) {
