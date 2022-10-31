@@ -83,10 +83,10 @@ void sa_main(
 
     auto start = high_resolution_clock::now();
 
-    #pragma omp parallel for
+    //#pragma omp parallel for
     for (int i = 0; i < NGRIDS; ++i) {
         cost = gridCost(edges, N[i], M[i], h_edgeA, h_edgeB, positions[i], LIMIT, F_ID, ARCH);
-
+        
         if(cost == edges) { 
             results[i] = cost;
             continue; // perfect solution
