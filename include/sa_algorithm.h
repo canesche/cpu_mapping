@@ -11,9 +11,9 @@ void edgesCostConstructor(Graph g, vector<map<pair<int,int>,int>> &edges_cost, i
 void sa_main(
     string bench,
     const int NGRIDS,
+    const int ARCH,
     const int LIMIT, 
     const int F_ID, 
-    const int ARCH,
     const int TEMP
 ) {
 
@@ -133,9 +133,7 @@ void sa_main(
 
     int best_index = get_best_index_sa(NGRIDS, edge_list, edges_cost, successfullRoutings);
 
-    cout << best_index << endl;
-
-    output_graph_sa(edge_list, edges_cost, best_index, g.num_edges(), g);  
+    output_graph_sa(edge_list, edges_cost, best_index, g.num_edges(), g, name, "sa", NGRIDS, ARCH);  
     
     delete h_edgeA;
     delete h_edgeB;

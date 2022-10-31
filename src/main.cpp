@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
     int value = 1656949570; //time(NULL);
-    printf("Seed %d\n", value);
+    //printf("Seed %d\n", value);
     srand (value);
     
     string bench = "";
@@ -30,13 +30,13 @@ int main(int argc, char* argv[]) {
 
     switch (program) {
         case 0:
-            yolt_main(bench, NGRIDS);
+            yolt_main(bench, NGRIDS, ARCH);
             break;
         case 1:
-            yott_main(bench, NGRIDS);
+            yott_main(bench, NGRIDS, ARCH);
             break;
         case 2:
-            sa_main(bench, NGRIDS, LIMIT, F_ID, ARCH, TEMP);
+            sa_main(bench, NGRIDS, ARCH, LIMIT, F_ID, TEMP);
             break;
         default:
             break;

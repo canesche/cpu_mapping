@@ -44,6 +44,7 @@ bool verify_size_input(int GRID_SIZE, int nodes);
 void yott_main(
     string path_dot,
     int times,
+    const int arch,
     const int parallel_mode = 0
 ) {
     string name = "";
@@ -199,7 +200,7 @@ void yott_main(
 
     int best_index = get_best_index_yott(times, EDGE_SIZE, vector_edges, edges_cost, successfullRoutings);
 
-    output_graph_yott(vector_edges, edges_cost, best_index, EDGE_SIZE, g);
+    output_graph_yott(vector_edges, edges_cost, best_index, EDGE_SIZE, g, name, "yott", times, arch);
 }
 
 void routing_yott(

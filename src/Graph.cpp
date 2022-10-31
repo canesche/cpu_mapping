@@ -55,8 +55,6 @@ Graph::Graph(string filename) {
     this->graph = graph_t(0);
 	this->dp = boost::dynamic_properties(ignore_other_properties);
 
-	
-
 	collect_input(filename, "label", name_label);
 
 	// set edges
