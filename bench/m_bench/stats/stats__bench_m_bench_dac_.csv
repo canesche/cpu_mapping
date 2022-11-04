@@ -1,0 +1,11 @@
+name;bench;nodes;edges;ideal_cost;avg_grade;g_hub;top_k_hub;percent_multicast;hist_grade
+arf.dot; ./bench/m_bench/dac/arf.dot; 38; 40; 40; 1.053; {}; []; 0.000; {'1': 32, '2': 4, '0': 2} 
+collapse_pyr.dot; ./bench/m_bench/dac/collapse_pyr.dot; 86; 95; 95; 1.105; {}; []; 0.000; {'1': 43, '2': 26, '0': 17} 
+conv3.dot; ./bench/m_bench/dac/conv3.dot; 25; 26; 26; 1.040; {'5': 4}; ('5', 4); 0.040; {'1': 22, '4': 1, '0': 2, '2': 0, '3': 0} 
+hal.dot; ./bench/m_bench/dac/hal.dot; 18; 15; 15; 0.833; {}; []; 0.000; {'1': 15, '0': 3} 
+mac.dot; ./bench/m_bench/dac/mac.dot; 11; 12; 12; 1.091; {}; []; 0.000; {'1': 10, '0': 1, '2': 1} 
+horner_bezier_surf.dot; ./bench/m_bench/dac/horner_bezier_surf.dot; 18; 16; 16; 0.889; {}; []; 0.000; {'1': 16, '0': 2} 
+simple.dot; ./bench/m_bench/dac/simple.dot; 14; 15; 15; 1.071; {'10': 3}; ('10', 3); 0.071; {'1': 12, '0': 1, '3': 1, '2': 0} 
+mults1.dot; ./bench/m_bench/dac/mults1.dot; 25; 28; 28; 1.120; {'3': 4}; ('3', 4); 0.040; {'1': 22, '4': 1, '2': 1, '0': 1, '3': 0} 
+ewf.dot; ./bench/m_bench/dac/ewf.dot; 47; 60; 60; 1.277; {'4': 3, '7': 3, '15': 3, '16': 3}; ('4', 3); 0.085; {'2': 10, '1': 28, '3': 4, '0': 5} 
+h2v2_smooth.dot; ./bench/m_bench/dac/h2v2_smooth.dot; 64; 67; 67; 1.047; {}; []; 0.000; {'1': 59, '2': 4, '0': 1} 

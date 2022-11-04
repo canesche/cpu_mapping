@@ -61,10 +61,10 @@ def main(dot: str):
 
     # finding the successors
     for i in range(len(nodes)):
-        nodes[i]['su'] = []
+        nodes[i]['pre'] = []
         for j in range(len(edges)):
             if edges[j][1] == nodes[i]['id']:
-                nodes[i]['su'].append(edges[j][0])
+                nodes[i]['pre'].append(edges[j][0])
 
     for i in range(len(nodes)):
         # Finding the type of the node
@@ -91,7 +91,7 @@ def main(dot: str):
     # finding which nodes are imadiate ondes
     for i in range(len(nodes)):
         nodes[i]['im'] = False
-        if nodes[i]['op'] in ['mul', 'add', 'sub'] and len(nodes[i]['su']) < 2:
+        if nodes[i]['op'] in ['mul', 'add', 'sub'] and len(nodes[i]['pre']) < 2:
             nodes[i]['op'] = nodes[i]['op']+'i'
             nodes[i]['im'] = True
     # create the dot string
@@ -109,7 +109,7 @@ def main(dot: str):
 
     for n in nodes:
         flag = False
-        for s in n['su']:
+        for s in n['pre']:
             if flag:
                 dot_str += '%s -> %s [port=1 weight=0];\n' % (s, n['id'])
             else:

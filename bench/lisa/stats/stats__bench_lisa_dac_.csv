@@ -1,0 +1,12 @@
+name;bench;nodes;edges;ideal_cost;avg_grade;g_hub;top_k_hub;percent_multicast;hist_grade
+atax.dot; ./bench/lisa/dac/atax.dot; 15; 15; 15; 1.000; {}; []; 0.000; {'2': 2, '1': 11, '0': 2} 
+bicg.dot; ./bench/lisa/dac/bicg.dot; 26; 27; 27; 1.038; {'22': 3}; ('22', 3); 0.038; {'2': 3, '1': 18, '0': 4, '3': 1} 
+cholesky.dot; ./bench/lisa/dac/cholesky.dot; 9; 9; 9; 1.000; {}; []; 0.000; {'2': 1, '1': 7, '0': 1} 
+doitgen.dot; ./bench/lisa/dac/doitgen.dot; 19; 19; 19; 1.000; {}; []; 0.000; {'2': 3, '1': 13, '0': 3} 
+gemm.dot; ./bench/lisa/dac/gemm.dot; 19; 19; 19; 1.000; {}; []; 0.000; {'1': 15, '2': 2, '0': 2} 
+gemver.dot; ./bench/lisa/dac/gemver.dot; 23; 24; 24; 1.043; {'20': 3}; ('20', 3); 0.043; {'2': 1, '1': 19, '0': 2, '3': 1} 
+gesummv.dot; ./bench/lisa/dac/gesummv.dot; 26; 27; 27; 1.038; {'22': 3}; ('22', 3); 0.038; {'1': 18, '2': 3, '0': 4, '3': 1} 
+mvt.dot; ./bench/lisa/dac/mvt.dot; 16; 16; 16; 1.000; {}; []; 0.000; {'2': 2, '1': 12, '0': 2} 
+symm.dot; ./bench/lisa/dac/symm.dot; 18; 18; 18; 1.000; {}; []; 0.000; {'1': 14, '2': 2, '0': 2} 
+syrk.dot; ./bench/lisa/dac/syrk.dot; 15; 15; 15; 1.000; {}; []; 0.000; {'1': 11, '2': 2, '0': 2} 
+trmm.dot; ./bench/lisa/dac/trmm.dot; 20; 20; 20; 1.000; {}; []; 0.000; {'1': 16, '2': 2, '0': 2} 
