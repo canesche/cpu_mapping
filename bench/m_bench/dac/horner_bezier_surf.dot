@@ -1,0 +1,37 @@
+digraph horner_bezier_surf {
+    0 [label = MUL_0 op = muli value = 2 ] ;
+    1 [label = REG_1 op = reg ] ;
+    2 [label = MUL_2 op = muli value = 2 ] ;
+    3 [label = ADD_3 op = addi value = 2 ] ;
+    4 [label = REG_4 op = reg ] ;
+    5 [label = MUL_5 op = muli value = 2 ] ;
+    6 [label = ADD_6 op = addi value = 2 ] ;
+    7 [label = MUL_7 op = muli value = 2 ] ;
+    8 [label = ADD_8 op = add ] ;
+    9 [label = MUL_9 op = muli value = 2 ] ;
+    10 [label = ADD_10 op = addi value = 2 ]; 
+    11 [label = OUT_11 op = out ] ;
+    12 [label = MUL_12 op = muli value = 2 ] ;
+    13 [label = MUL_13 op = mul ] ;
+    14 [label = MUL_14 op = muli value = 2 ] ;
+    15 [label = ADD_15 op = addi value = 2 ] ;
+    16 [label = ADD_16 op = addi value = 2 ] ;
+    17 [label = OUT_17 op = out ] ;
+    
+    3 -> 1 [port = 0  weight = 0 ] ;
+    16 -> 2 [port = 0  weight = 0 ] ;
+    7 -> 3 [port = 0  weight = 0 ] ;
+    15 -> 4 [port = 0  weight = 0 ] ;
+    2 -> 6 [port = 0  weight = 0 ] ;
+    10 -> 7 [port = 0  weight = 0 ] ;
+    12 -> 8 [port = 0  weight = 0 ] ;
+    13 -> 8 [port = 1  weight = 0 ] ;
+    0 -> 10 [port = 0  weight = 0 ] ;
+    6 -> 11 [port = 0  weight = 0 ] ;
+    8 -> 17 [port = 0  weight = 0 ] ;
+    1 -> 12 [port = 0  weight = 0 ] ;
+    4 -> 13 [port = 0  weight = 0 ] ;
+    9 -> 13 [port = 1  weight = 0 ] ;
+    14 -> 15 [port = 0  weight = 0 ] ;
+    5 -> 16 [port = 0  weight = 0 ] ;
+}
