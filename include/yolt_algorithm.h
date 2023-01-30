@@ -177,6 +177,24 @@ void yolt_main(
         }
     }
 
+    int** grid = new int*[times];
+    for (int i = 0; i < times; ++i) {
+        grid[i] = new int[TOTAL_GRID_SIZE];
+    }
+
+    for (int i = 0; i < times; ++i) {
+        for (int j = 0; j < TOTAL_GRID_SIZE; ++j) {
+            grid[i][j] = -1;
+        }
+        for (int j = 0; j < NODE_SIZE; ++j) {
+            int pos_local = i*NODE_SIZE+j;
+            int pos_node = pos_i[pos_local] * GRID_SIZE + pos_j[pos_local]; 
+            grid[i][pos_node] = j;
+        }
+    }
+
+    printGrid(grid[0], N[0], M[0]);
+
     bool *successfullRoutings = new bool[times]; 
     for (int i = 0; i < times; ++i) {
         successfullRoutings[i] = true;
