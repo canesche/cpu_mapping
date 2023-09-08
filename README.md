@@ -2,7 +2,7 @@
 
 CPU Mapping - This project presents an mapping (Placement and routing) for dataflow to three tools: YOLT, YOTT, and SA.
 
-**YOLT** means **Y**ou **O**nly **L**ook **T**wice
+**YOTO** means **Y**ou **O**nly **T**raversal **O**nce
 
 **YOTT** means **Y**ou **O**nly **T**raversal **T**wice
 
