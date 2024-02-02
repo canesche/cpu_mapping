@@ -3,7 +3,7 @@
 #include <main.h>
 
 int main(int argc, char* argv[]) {
-    int value = 1656949570; //time(NULL);
+    int value = time(NULL);
     //printf("Seed %d\n", value);
     srand (value);
     

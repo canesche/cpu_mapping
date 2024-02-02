@@ -44,36 +44,6 @@ bool try_adjacency(int a, int b, int pos_a_i, int pos_a_j, int pos_b_i, int pos_
         }  
     }
 
-    /*
-    while (true) {
-        if (type_node_b == 0) {
-            pos_b = rand() % TOTAL_GRID_SIZE;
-            pos_b_i = pos_b / GRID_SIZE;
-            pos_b_j = pos_b % GRID_SIZE;
-            if (placed(type_node_b, pos_b_i, pos_b_j, pos_b, GRID_SIZE, TOTAL_GRID_SIZE, 
-                global_pos_b, grid_place, pos_i, pos_j, node_degree, grid_freedom)) {
-
-                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
-
-                edges_cost_local[key] = cost;
-                cost_place += cost;
-                return true;
-            } 
-        } else { // type_node == 1
-            pos_b = rand() % (IN_OUT_SIZE);
-            pos_b_i = pos_io_i[pos_b];
-            pos_b_j = pos_io_j[pos_b];
-            if (placed(type_node_b, pos_b_i, pos_b_j, pos_b, GRID_SIZE, TOTAL_GRID_SIZE, 
-                global_pos_b, grid_place, pos_i, pos_j, node_degree, grid_freedom)) {
-
-                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
-
-                edges_cost_local[key] = cost;
-                cost_place += cost;
-                return true;
-            } 
-        }
-    }*/
     return false;
 }
 

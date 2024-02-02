@@ -1,6 +1,14 @@
 #ifndef YOTT_ALGORITHM_H
 #define YOTT_ALGORITHM_H
 
+// 1 activated and 0 not activated
+#define __DEBUG 0
+#define __ARCH 1 // 0 = mesh and 1 = 1hop
+#define __CYCLE 1 // annotattion cycle ON=1/OFF=0
+#define __LOOKAHEAD 0
+#define __MAX_ANNOTATION 2 // limit annotation n, n is distance on graph
+#define __NEIGHBOURHOOD 1
+
 #include <Graph.h>
 #include <get_critical_path.h>
 #include <stack>
