@@ -95,9 +95,20 @@ void statistic(Graph g, string name, int times, int *type_node,
             VISITED[a] = 1;
         }
     }
+    
+    printf("%s, %d, %d, %d/%d, %d, %d",
+        name.c_str(),
+        NODE_SIZE,
+        EDGE_SIZE,
+        INPUTS_SIZE,
+        OUTPUTS_SIZE,
+        best_cost,
+        worst_edge
+    );
 
-    printf("%s,%d,%d,%d/%d,%.2f,%d,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,", 
-        name.c_str(), NODE_SIZE, EDGE_SIZE, INPUTS_SIZE, OUTPUTS_SIZE, 1.0*best_cost/EDGE_SIZE, worst_edge, 
+    /*
+    printf("%s,%d,%d,%d/%d,%d,%d,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,%.1f,", 
+        name.c_str(), NODE_SIZE, EDGE_SIZE, INPUTS_SIZE, OUTPUTS_SIZE, best_cost, worst_edge, 
         100.0*count_ff/EDGE_SIZE, 
         100.0*count_ioe/EDGE_SIZE, 
         100.0*count_rf/EDGE_SIZE, 
@@ -109,6 +120,7 @@ void statistic(Graph g, string name, int times, int *type_node,
         count_1,
         count_m_1
     ); 
+    */
 
 }
 

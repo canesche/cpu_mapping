@@ -11,14 +11,12 @@
 #include <try_adjacency.h>
 #include <get_cost.h>
 
-#define __LAYERS 1
-
 void yolt_algorithm(const int NODE_SIZE, const int GRID_SIZE, const int EDGE_SIZE, 
         const int start, const int times, vector<tuple3> &vector_edges, int *node_degree,
         int *grid_freedom_original, int *pos_i, int* pos_j, int *type_node, int *type_matrix, 
         int *pos_io_i, int *pos_io_j, const int IN_OUT_SIZE, 
         vector<map<pair<int,int>,int>> &edges_cost, int *vector_cost, 
-        int *list_borders);
+        int *list_borders, int arch);
 
 void routing_yott(
     int *N,
@@ -74,15 +72,17 @@ void yolt_main(
         M[i] = GRID_SIZE; //ceil(sqrt(nodes));
     }
 
+    /*
     if (!verify_size_input(GRID_SIZE, g.get_inputs().size()+g.get_outputs().size())){
         printf("%s, Not solution for this GRID_SIZE %d\n", name.c_str(), GRID_SIZE);
         return;
     }
+    */
 
     vector<pair<int,int>> edges = g.get_edges();
 
     int* type_node = new int[NODE_SIZE];
-    int* type_matrix = new int[GRID_SIZE*GRID_SIZE*__LAYERS];
+    int* type_matrix = new int[GRID_SIZE*GRID_SIZE];
 
     vector<int> aux_in_out;
 
@@ -104,14 +104,8 @@ void yolt_main(
         3: random (ZigZag switch)
         4 or otherwise: zigzag without help preprocessing
     **/
-    const int change = 5;
     int *node_degree = new int[times*NODE_SIZE];
     int *list_borders = new int[NODE_SIZE];
-
-    //g.print_graph_number();
-    #if __NEIGHBOURHOOD > 0
-    get_node_degree(g, times, NODE_SIZE, node_degree);
-    #endif
 
     create_list_borders(g, NODE_SIZE, GRID_SIZE, list_borders);
 
@@ -119,7 +113,7 @@ void yolt_main(
 
     start_clock = high_resolution_clock::now();
 
-    smart_transversal_algorithm(g, edges, NODE_SIZE, vector_edges, dic_CYCLE, change, times);
+    smart_transversal_algorithm(g, edges, NODE_SIZE, vector_edges, dic_CYCLE, 0, times);
 
     end_clock = high_resolution_clock::now();
     time_list = duration_cast<Milliseconds>(end_clock - start_clock).count();
@@ -144,7 +138,7 @@ void yolt_main(
         start_clock = high_resolution_clock::now();
         yolt_algorithm(NODE_SIZE, GRID_SIZE, EDGE_SIZE, 0, times, vector_edges, 
             node_degree, grid_freedom, pos_i, pos_j, type_node, type_matrix, pos_io_i,
-            pos_io_j, IN_OUT_SIZE, edges_cost, vector_cost, list_borders);
+            pos_io_j, IN_OUT_SIZE, edges_cost, vector_cost, list_borders, arch);
         end_clock = high_resolution_clock::now();
 
         time_placement = duration_cast<Milliseconds>(end_clock-start_clock).count();
@@ -167,7 +161,7 @@ void yolt_main(
             times/max_threads + (i < times % max_threads), vector_edges, 
             node_degree, grid_freedom_thread[i], pos_i, pos_j, type_node, type_matrix, 
             pos_io_i, pos_io_j, IN_OUT_SIZE, edges_cost_threads[i], vector_cost, 
-            list_borders);
+            list_borders, arch);
         }
         end_clock = high_resolution_clock::now();
         time_placement = duration_cast<Milliseconds>(end_clock - start_clock).count();
@@ -203,7 +197,7 @@ void yolt_main(
     int bad_route = 0;
 
     // routing function
-    routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, 0, bad_route, successfullRoutings);
+    //routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, 0, bad_route, successfullRoutings);
 
     statistic(g, name, times, type_node, vector_edges, edges_cost, vector_cost);
 
@@ -487,7 +481,8 @@ void yolt_algorithm(
     const int IN_OUT_SIZE, 
     vector<map<pair<int,int>,int>> &edges_cost, 
     int *vector_cost, 
-    int *list_borders
+    int *list_borders,
+    int arch
 ){
     
     int cost = -1, dist_border;
@@ -501,7 +496,7 @@ void yolt_algorithm(
     vector<int> pos_cost, pos_node_try;
     int size_pos_node_try, count, cost_min, cost_place, global_pos_a, global_pos_b, local_edge;
     int best_cost = 9999999, local_grid, rand_pos, pos_a, pos_b;
-    int* grid_place = new int[TOTAL_GRID_SIZE*__LAYERS];
+    int* grid_place = new int[TOTAL_GRID_SIZE];
     int* grid_freedom = new int[TOTAL_GRID_SIZE];
     int type_node_a, type_node_b, pos_cycle_size;
     map<pair<int,int>,int> edges_cost_local;
@@ -512,7 +507,7 @@ void yolt_algorithm(
 
         edges_cost_local.clear();
 
-        for(int i = 0; i < TOTAL_GRID_SIZE*__LAYERS; ++i) grid_place[i] = type_matrix[i];
+        for(int i = 0; i < TOTAL_GRID_SIZE; ++i) grid_place[i] = type_matrix[i];
 
         cost_place = 0;
         for (int i = 0; i < EDGE_SIZE; ++i) {
@@ -539,7 +534,7 @@ void yolt_algorithm(
             key = make_pair(a, b);
             
             if (pos_a_i != -1 && pos_b_i != -1) {
-                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
+                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE, arch);
                 cost_place += cost;
                 edges_cost_local[key] = cost;
                 continue;
@@ -568,7 +563,7 @@ void yolt_algorithm(
                 if (try_adjacency(a, b, pos_a_i, pos_a_j, pos_b_i, pos_b_j, dist_border, 
                 type_node_b, GRID_SIZE, TOTAL_GRID_SIZE, NODE_SIZE, t, key, global_pos_b, 
                 grid_place, pos_i, pos_j, node_degree, grid_freedom, pos_io_i, pos_io_j, 
-                IN_OUT_SIZE, edges_cost_local, cost_place)) continue;
+                IN_OUT_SIZE, edges_cost_local, cost_place, arch, 0)) continue;
             } 
 
             if (pos_a == -1 || pos_b == -1) {

@@ -225,9 +225,11 @@ void create_list_zigzag(
         aux_CYCLE.resize(0);
         outputList = g.get_outputs();
         random_shuffle(outputList.begin(), outputList.end());
-
-        n_random = rand() % change;
-        //printf("random = %d\n", n_random);
+        
+        n_random = 0;
+        if (change == 3)
+            n_random = rand() % (change + 1);
+        //printf("random= %d\n", n_random);
 
         for (int i = 0; i < g.num_nodes(); ++i) VISITED[i] = false;
 
@@ -439,6 +441,9 @@ void smart_transversal_algorithm(
     }
     printf("\n");*/
 #if __CYCLE == 1
+
+    printf("cycle.....\n");
+
     const int EDGE_SIZE = g.num_edges();
 
     pair<int, int> key;

@@ -5,8 +5,8 @@
 #define __LAYERS 1
 #define __MAX_ANNOTATION 2
 #define __DEBUG 0
+#define __NEIGHBOURHOOD 4
 #define __CYCLE 1
-#define __NEIGHBOURHOOD 1
 
 #include <cstdio>
 #include <string>

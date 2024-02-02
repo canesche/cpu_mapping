@@ -1,14 +1,6 @@
 #ifndef YOTT_ALGORITHM_H
 #define YOTT_ALGORITHM_H
 
-// 1 activated and 0 not activated
-#define __DEBUG 0
-#define __ARCH 1 // 0 = mesh and 1 = 1hop
-#define __CYCLE 1 // annotattion cycle ON=1/OFF=0
-#define __LOOKAHEAD 0
-#define __MAX_ANNOTATION 2 // limit annotation n, n is distance on graph
-#define __NEIGHBOURHOOD 1
-
 #include <Graph.h>
 #include <get_critical_path.h>
 #include <stack>
@@ -26,7 +18,7 @@ void yott_algorithm(const int NODE_SIZE, const int GRID_SIZE, const int EDGE_SIZ
         int *grid_freedom_original, int *pos_i, int* pos_j, int *type_node, int *type_matrix, 
         int *pos_io_i, int *pos_io_j, const int IN_OUT_SIZE, 
         vector<map<pair<int,int>,int>> &edges_cost, int *vector_cost, 
-        int *list_borders, vector<map<pair<int, int>,vector<tuple3>>> &dic_CYCLE);
+        int *list_borders, vector<map<pair<int, int>,vector<tuple3>>> &dic_CYCLE, const int arch);
 
 void smart_transversal_algorithm(Graph g, vector<pair<int,int>> edges, 
     const int NODE_SIZE, vector<tuple3> &EDGES, vector<map<pair<int, int>,vector<tuple3>>> &dic_CYCLE, 
@@ -44,7 +36,8 @@ void routing_yott(
     int times,
     const int ARCH,
     int &bad_route,
-    bool *successfulRoutings
+    bool *successfulRoutings,
+    int* vector_cost
 );
 
 bool verify_size_input(int GRID_SIZE, int nodes);
@@ -116,13 +109,13 @@ void yott_main(
         3: random (ZigZag switch)
         4 or otherwise: zigzag without help preprocessing
     **/
-    const int change = 5;
+    const int change = 3;
     int *node_degree = new int[times*NODE_SIZE];
     int *list_borders = new int[NODE_SIZE];
 
     //g.print_graph_number();
     #if __NEIGHBOURHOOD > 0
-    get_node_degree(g, times, NODE_SIZE, node_degree);
+        get_node_degree(g, times, NODE_SIZE, node_degree);
     #endif
 
     create_list_borders(g, NODE_SIZE, GRID_SIZE, list_borders);
@@ -156,7 +149,7 @@ void yott_main(
         start_clock = high_resolution_clock::now();
         yott_algorithm(NODE_SIZE, GRID_SIZE, EDGE_SIZE, 0, times, vector_edges, 
             node_degree, grid_freedom, pos_i, pos_j, type_node, type_matrix, pos_io_i,
-            pos_io_j, IN_OUT_SIZE, edges_cost, vector_cost, list_borders, dic_CYCLE);
+            pos_io_j, IN_OUT_SIZE, edges_cost, vector_cost, list_borders, dic_CYCLE, arch);
         end_clock = high_resolution_clock::now();
 
         time_placement = duration_cast<Milliseconds>(end_clock-start_clock).count();
@@ -179,7 +172,7 @@ void yott_main(
             times/max_threads + (i < times % max_threads), vector_edges, 
             node_degree, grid_freedom_thread[i], pos_i, pos_j, type_node, type_matrix, 
             pos_io_i, pos_io_j, IN_OUT_SIZE, edges_cost_threads[i], vector_cost, 
-            list_borders, dic_CYCLE);
+            list_borders, dic_CYCLE, arch);
         }
         end_clock = high_resolution_clock::now();
         time_placement = duration_cast<Milliseconds>(end_clock - start_clock).count();
@@ -215,13 +208,13 @@ void yott_main(
     int bad_route = 0;
 
     // routing function
-    routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, 0, bad_route, successfullRoutings);
+    routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, arch, bad_route, successfullRoutings, vector_cost);
 
     statistic(g, name, times, type_node, vector_edges, edges_cost, vector_cost);
 
     //printf("\n%d\n", best_idx);
 
-    printf("%.2lf,%.2lf\n",time_placement,time_list);
+    printf("%.2lf, %.2lf\n",time_placement,time_list);
 
     int best_index = get_best_index_yott(times, EDGE_SIZE, vector_edges, edges_cost, successfullRoutings);
 
@@ -240,7 +233,8 @@ void routing_yott(
     int times,
     const int ARCH,
     int &bad_route,
-    bool *successfulRoutings
+    bool *successfulRoutings,
+    int *vector_cost
 ) {
 
     int a, b;
@@ -475,8 +469,10 @@ void routing_yott(
                 break;
             }
 
-            // printf("%d -> %d old Cost: %d new Cost: %d\n", a, b, edge[i].cost, step);
+            //printf("%d -> %d old Cost: %d new Cost: %d\n", a, b, edge[i].cost, step);
             edges_cost[t][make_pair(a,b)] = step;
+            // update the cost
+            //vector_cost[t] = (step - edge[i].cost);
         }   
     }
 }
@@ -492,13 +488,13 @@ bool verify_size_input(int GRID_SIZE, int nodes) {
 
 void get_tips(int pos_i, int pos_j, int *grid_freedom, const int GRID_SIZE, int node_type, 
     int *grid_place, int dist_border, vector<pair<int,int>> &aux, int *pos_io_i, 
-    int *pos_io_j, int IN_OUT_SIZE) {
+    int *pos_io_j, int IN_OUT_SIZE, int arch) {
     
     aux.resize(0);
     
     int aux_pos, x, y, cost;
 
-    if (dist_border == 0) { // node not closed to IO
+    //if (dist_border == 0) { // node not closed to IO
         for (int i = 0; i < SIZE_POS_TIPS_AUX; ++i){
             x = pos_i + POS_TIPS_AUX[i][0];
             y = pos_j + POS_TIPS_AUX[i][1];
@@ -512,6 +508,7 @@ void get_tips(int pos_i, int pos_j, int *grid_freedom, const int GRID_SIZE, int 
                 aux.push_back({grid_freedom[aux_pos],aux_pos});
             }
         }
+    /*
     } else { // node close to IO
 #if __DEBUG == 1
     printf("Pos Border: %d\n", dist_border);
@@ -524,9 +521,9 @@ void get_tips(int pos_i, int pos_j, int *grid_freedom, const int GRID_SIZE, int 
 #if __NEIGHBOURHOOD > 0
                 && grid_freedom[aux_pos] > 0 
 #endif
-                && grid_place[aux_pos] == node_type) {
+            ) { //&& grid_place[aux_pos] == node_type) {
                 for (int j = 0; j < IN_OUT_SIZE; ++j) {
-                    cost = cost_local(x, y, pos_io_i[j], pos_io_j[j], GRID_SIZE);
+                    cost = cost_local(x, y, pos_io_i[j], pos_io_j[j], GRID_SIZE, arch);
                     if (cost <= dist_border) {
                         aux.push_back({grid_freedom[aux_pos],aux_pos});
                         break;
@@ -535,10 +532,11 @@ void get_tips(int pos_i, int pos_j, int *grid_freedom, const int GRID_SIZE, int 
             }
         }
     }
+    */
 }
 
 void get_pos_neighbor(int pos_node, int dist_max, int *grid_freedom, 
-    const int GRID_SIZE, const int TOTAL_GRID_SIZE, vector<pair<int,int>> &aux) {
+    const int GRID_SIZE, const int TOTAL_GRID_SIZE, vector<pair<int,int>> &aux, const int arch) {
     
     aux.resize(0);
 
@@ -548,10 +546,11 @@ void get_pos_neighbor(int pos_node, int dist_max, int *grid_freedom,
     int diff;
     bool can;
 
-    #if __ARCH == 1
+    if (arch == 1)
         dist_max *= 2;
-    #endif
-    if (dist_max == 0) dist_max = 1;
+
+    if (dist_max == 0) 
+        dist_max = 1;
 
     for (int i = -dist_max; i <= dist_max; ++i){
         for (int j = -dist_max; j <= dist_max; ++j) {
@@ -559,11 +558,11 @@ void get_pos_neighbor(int pos_node, int dist_max, int *grid_freedom,
             new_pos_i = i + pos_i;
             new_pos_j = j + pos_j;
             
-            #if __ARCH == 0
+            if (arch == 0) {
                 diff = abs(i) + abs(j) - 1;
-            #elif __ARCH == 1
+            } else if (arch == 1) {
                 diff = (abs(i)/2 + abs(i)%2 + abs(j)/2 + abs(j)%2 - 1);
-            #endif
+            }
             
             can = (diff >= 0 && diff < dist_max);
 
@@ -682,7 +681,8 @@ void yott_algorithm(
     vector<map<pair<int,int>,int>> &edges_cost, 
     int *vector_cost, 
     int *list_borders, 
-    vector<map<pair<int, int>,vector<tuple3>>> &dic_CYCLE
+    vector<map<pair<int, int>,vector<tuple3>>> &dic_CYCLE,
+    const int arch
 ){
     
     int cost = -1, dist_border;
@@ -744,7 +744,7 @@ void yott_algorithm(
 #endif
             
             if (pos_a_i != -1 && pos_b_i != -1) {
-                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
+                cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE, arch);
                 cost_place += cost;
                 edges_cost_local[key] = cost;
 #if __DEBUG == 1
@@ -768,12 +768,12 @@ void yott_algorithm(
                     if (placed(type_node_a, pos_a_i, pos_a_j, pos_a, GRID_SIZE, TOTAL_GRID_SIZE, 
                         global_pos_a, grid_place, pos_i, pos_j, node_degree, grid_freedom)) {
 
-                        get_tips(pos_a_i, pos_a_j, grid_freedom, GRID_SIZE, type_node_b, grid_place, 0, pos_tips, pos_io_i, pos_io_j, IN_OUT_SIZE);
+                        get_tips(pos_a_i, pos_a_j, grid_freedom, GRID_SIZE, type_node_b, grid_place, 0, pos_tips, pos_io_i, pos_io_j, IN_OUT_SIZE, arch);
                         break;
                     }
                 }
             } else { // get tips of pos_a
-                get_tips(pos_a_i, pos_a_j, grid_freedom, GRID_SIZE, type_node_b, grid_place, list_borders[b], pos_tips, pos_io_i, pos_io_j, IN_OUT_SIZE);
+                get_tips(pos_a_i, pos_a_j, grid_freedom, GRID_SIZE, type_node_b, grid_place, list_borders[b], pos_tips, pos_io_i, pos_io_j, IN_OUT_SIZE, arch);
             }
 
             if (pos_b_i == -1) { // verify if side 'b' already place
@@ -865,7 +865,7 @@ void yott_algorithm(
                         pos_node = pos_i[pos_cycle[j].v0] * GRID_SIZE + pos_j[pos_cycle[j].v0];
                         dist_max = pos_cycle[j].v1;
                         
-                        get_pos_neighbor(pos_node, dist_max, grid_freedom, GRID_SIZE, TOTAL_GRID_SIZE, pos_aux);
+                        get_pos_neighbor(pos_node, dist_max, grid_freedom, GRID_SIZE, TOTAL_GRID_SIZE, pos_aux, arch);
 
 #if DEBUG == 1
                         cout << "Node " << pos_cycle[j].v0 << "d" << dist_max << " pos= " << pos[pos_cycle[j].v0] << endl;
@@ -905,7 +905,7 @@ void yott_algorithm(
                     if (placed(type_node_b, pos_b_i, pos_b_j, pos_b, GRID_SIZE, TOTAL_GRID_SIZE, 
                         global_pos_b, grid_place, pos_i, pos_j, node_degree, grid_freedom)) {
                         
-                        cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
+                        cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE, arch);
 
                         #if __DEBUG == 1
                             printf("PLACE TYPE INTERCESSAO: %2d -> %2d Cost: %d\n", a, b, cost);
@@ -928,7 +928,7 @@ void yott_algorithm(
                         for (int k = 0; k < size_pos_node_try; ++k) {
                             for (int j = 0; j < pos_tips_size; ++j) {
                                 int aux = pos_node_try[k]+(t+start)*NODE_SIZE;
-                                cost = cost_local(pos_i[aux]/GRID_SIZE,pos_j[aux]%GRID_SIZE,pos_tips[j].second/GRID_SIZE,pos_tips[j].second%GRID_SIZE, GRID_SIZE);
+                                cost = cost_local(pos_i[aux]/GRID_SIZE,pos_j[aux]%GRID_SIZE,pos_tips[j].second/GRID_SIZE,pos_tips[j].second%GRID_SIZE, GRID_SIZE, arch);
                                 if (k == 0) {
                                     pos_cost.push_back(cost);
                                 } else {
@@ -970,7 +970,7 @@ void yott_algorithm(
                     if (placed(type_node_b, pos_b_i, pos_b_j, pos_b, GRID_SIZE, TOTAL_GRID_SIZE, 
                         global_pos_b, grid_place, pos_i, pos_j, node_degree, grid_freedom)) {
 
-                        cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE);
+                        cost = cost_local(pos_a_i, pos_a_j, pos_b_i, pos_b_j, GRID_SIZE, arch);
 
                         #if __DEBUG == 1
                             printf("PLACE TYPE DICAS: %2d -> %2d Cost: %d\n", a, b, cost);
@@ -987,7 +987,7 @@ void yott_algorithm(
                 if (try_adjacency(a, b, pos_a_i, pos_a_j, pos_b_i, pos_b_j, dist_border, 
                 type_node_b, GRID_SIZE, TOTAL_GRID_SIZE, NODE_SIZE, t, key, global_pos_b, 
                 grid_place, pos_i, pos_j, node_degree, grid_freedom, pos_io_i, pos_io_j, 
-                IN_OUT_SIZE, edges_cost_local, cost_place)) continue;
+                IN_OUT_SIZE, edges_cost_local, cost_place, arch, 1)) continue;
             } 
 
             if (pos_a == -1 || pos_b == -1){

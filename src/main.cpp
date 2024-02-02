@@ -4,7 +4,7 @@
 
 int main(int argc, char* argv[]) {
     int value = time(NULL);
-    //printf("Seed %d\n", value);
+    printf("Seed %d\n", value);
     srand (value);
     
     string bench = "";
@@ -27,6 +27,9 @@ int main(int argc, char* argv[]) {
         cout << "ERROR: Number of parameters isn't enough!" << endl;
         return 1;
     }
+
+    // define the arch
+    #define __ARCH ARCH
 
     switch (program) {
         case 0:
