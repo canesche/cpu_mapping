@@ -49,7 +49,7 @@ void printGrid(int *grid, int N, int M){
         if(i % M == 0) printf("\n");
         printf("%4d", grid[i]);
     }
-    printf("\n");
+    printf("\n\n");
 }
 
 void create_edge_list(int *v, int *v_i, int *h_edgeA, int *h_edgeB, 

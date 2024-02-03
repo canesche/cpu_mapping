@@ -3,8 +3,8 @@
 #include <main.h>
 
 int main(int argc, char* argv[]) {
-    int value = time(NULL);
-    printf("Seed %d\n", value);
+    int value = 1706961029; //time(NULL);
+    //printf("Seed %d\n", value);
     srand (value);
     
     string bench = "";
@@ -33,12 +33,15 @@ int main(int argc, char* argv[]) {
 
     switch (program) {
         case 0:
-            yolt_main(bench, NGRIDS, ARCH);
+            printf("Tool: YOTO\n");
+            yoto_main(bench, NGRIDS, ARCH);
             break;
         case 1:
+            printf("Tool: YOTT\n");
             yott_main(bench, NGRIDS, ARCH);
             break;
         case 2:
+            printf("Tool: SA\n");
             sa_main(bench, NGRIDS, ARCH, LIMIT, F_ID, TEMP);
             break;
         default:

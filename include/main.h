@@ -46,7 +46,7 @@ using Milliseconds = duration<double, ratio<1,1000>>;
 #include <sa_algorithm.h>
 #include <statistic.h>
 #include <yott_algorithm.h>
-#include <yolt_algorithm.h>
+#include <yoto_algorithm.h>
 #include <MyPathList.h>
 
 #endif

@@ -198,8 +198,6 @@ void yott_main(
         }
     }
 
-    printGrid(grid[0], N[0], M[0]);
-
     bool *successfullRoutings = new bool[times]; 
     for (int i = 0; i < times; ++i) {
         successfullRoutings[i] = true;
@@ -218,7 +216,14 @@ void yott_main(
 
     int best_index = get_best_index_yott(times, EDGE_SIZE, vector_edges, edges_cost, successfullRoutings);
 
+    printGrid(grid[best_index], N[best_index], M[best_index]);
+
     output_graph_yott(vector_edges, edges_cost, best_index, EDGE_SIZE, g, name, "yott", times, arch);
+
+    // print the edges values and names
+    for (auto e : edges) {
+        printf("%d (%s) -> %d (%s)\n", e.first, g.get_name_node(e.first).c_str(), e.second, g.get_name_node(e.second).c_str());
+    }
 }
 
 void routing_yott(
