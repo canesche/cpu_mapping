@@ -3,11 +3,11 @@
 
 #include <vector>
 
-void create_freedrom_degree(const int GRID_SIZE, int *grid_freedom) {
+void create_freedrom_degree(const int GRID_SIZE, int *grid_freedom, int arch) {
 
     int i, j, count;
 
-    #if __ARCH == 0
+    if (arch == 0) {
         for(i = 0; i < GRID_SIZE; ++i) {
             for(j = 0; j < GRID_SIZE; ++j) {
                 count = 0;
@@ -18,7 +18,7 @@ void create_freedrom_degree(const int GRID_SIZE, int *grid_freedom) {
                 grid_freedom[i*GRID_SIZE+j] = count;
             }
         }
-    #elif __ARCH == 1
+    } else if (arch == 1) {
         for(i = 0; i < GRID_SIZE; ++i) {
             for(j = 0; j < GRID_SIZE; ++j) {
                 count = 0;
@@ -33,9 +33,9 @@ void create_freedrom_degree(const int GRID_SIZE, int *grid_freedom) {
                 grid_freedom[i*GRID_SIZE+j] = count;
             }
         }
-    #else
+    } else {
         printf("Architecture not defined!\n");
-    #endif
+    }
 }
 
 void update_grid_freedom(int pos, int *grid_freedom, const int GRID_SIZE, 

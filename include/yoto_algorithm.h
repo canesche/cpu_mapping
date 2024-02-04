@@ -107,7 +107,7 @@ void yoto_main(
     int *node_degree = new int[times*NODE_SIZE];
     int *list_borders = new int[NODE_SIZE];
 
-    create_list_borders(g, NODE_SIZE, GRID_SIZE, list_borders);
+    create_list_borders(g, NODE_SIZE, GRID_SIZE, list_borders, arch);
 
     //for (int i = 0; i < NODE_SIZE; ++i) printf("%d %d\n", i, list_borders[i]);
 
@@ -133,7 +133,7 @@ void yoto_main(
     if (parallel_mode == 0) {
         grid_freedom = new int[TOTAL_GRID_SIZE];
 
-        create_freedrom_degree(GRID_SIZE, grid_freedom);
+        create_freedrom_degree(GRID_SIZE, grid_freedom, arch);
 
         start_clock = high_resolution_clock::now();
         yoto_algorithm(NODE_SIZE, GRID_SIZE, EDGE_SIZE, 0, times, vector_edges, 
@@ -149,7 +149,7 @@ void yoto_main(
 
         for(int i = 0; i < max_threads; i++) {
             grid_freedom_thread[i] = new int[TOTAL_GRID_SIZE];
-            create_freedrom_degree(GRID_SIZE, grid_freedom_thread[i]);
+            create_freedrom_degree(GRID_SIZE, grid_freedom_thread[i], arch);
         }
 
         int block_threads = times / max_threads;
@@ -195,7 +195,7 @@ void yoto_main(
     int bad_route = 0;
 
     // routing function
-    routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, 0, bad_route, successfullRoutings, vector_cost);
+    routing_yott(N, M, EDGE_SIZE, NODE_SIZE, vector_edges, edges_cost, pos_i, pos_j, times, arch, bad_route, successfullRoutings, vector_cost);
 
     statistic(g, name, times, type_node, vector_edges, edges_cost, vector_cost);
 
@@ -203,14 +203,9 @@ void yoto_main(
 
     int best_index = get_best_index_yott(times, EDGE_SIZE, vector_edges, edges_cost, successfullRoutings);
 
-    printGrid(grid[best_index], N[best_index], M[best_index]);
+    printGrid(grid, N, M, edges_cost, g, best_index, EDGE_SIZE, vector_edges);
 
     output_graph_yott(vector_edges, edges_cost, best_index, EDGE_SIZE, g, name, "yoto", times, arch);
-
-    // print the edges values and names
-    for (auto e : edges) {
-        printf("%d (%s) -> %d (%s)\n", e.first, g.get_name_node(e.first).c_str(), e.second, g.get_name_node(e.second).c_str());
-    }
 }
 
 void yoto_algorithm(

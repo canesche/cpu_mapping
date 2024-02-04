@@ -44,12 +44,26 @@ inline void fill_grid(Graph& g,
     }  
 }
 
-void printGrid(int *grid, int N, int M){
-    for (int i = 0; i < N*M; ++i){
-        if(i % M == 0) printf("\n");
-        printf("%4d", grid[i]);
+void printGrid(int **grid, int *N, int *M, vector<map<pair<int,int>,int>> edges_cost, Graph g, int idx, int EDGE_SIZE, vector<tuple3> vector_edges){
+    for (int i = 0; i < N[idx]*M[idx]; ++i){
+        if(i % M[idx] == 0) printf("\n");
+        printf("%4d", grid[idx][i]);
     }
     printf("\n\n");
+
+    for (int j = 0; j < EDGE_SIZE; ++j) {
+        int a = vector_edges[idx*EDGE_SIZE+j].v0;
+        int b = vector_edges[idx*EDGE_SIZE+j].v1;
+        int dir = vector_edges[idx*EDGE_SIZE+j].v2;
+        int cost = edges_cost[idx][make_pair(a,b)];
+        string a_name = g.get_name_node(a);
+        string b_name = g.get_name_node(b);
+        if (dir == 0) { 
+            printf("%d (%s) -> %d (%s) : weight = %d\n", a, a_name.c_str(), b, b_name.c_str(), cost);
+        } else {
+            printf("%d (%s) -> %d (%s) : weight = %d\n", b, b_name.c_str(), a, a_name.c_str(), cost);
+        }
+    }
 }
 
 void create_edge_list(int *v, int *v_i, int *h_edgeA, int *h_edgeB, 

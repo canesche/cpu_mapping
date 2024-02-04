@@ -129,16 +129,16 @@ void bfs_critical_path(Graph g, vector<pair<pair<int,int>,int>> &EDGES,
 }
 
 void create_list_borders(Graph g, const int NODE_SIZE, const int GRID_SIZE, 
-    int *list_borders) {
+    int *list_borders, int arch) {
 
     std::queue<pair<int,int>> q;
     vector<int> son, inputs;
-    int dad, child, new_cost, cost, distance;
-#if __ARCH == 0
-    distance = max(GRID_SIZE/2,1);
-#elif __ARCH == 1
-    distance = max(GRID_SIZE/2-1,1);
-#endif
+    int dad, child, new_cost, cost, distance = -1;
+    if (arch == 0) {
+        distance = max(GRID_SIZE/2,1);
+    } else if (arch == 1) {
+        distance = max(GRID_SIZE/2-1,1);
+    }
 
 #if __THRESHOlD_IO > 0
     distance = min(distance, __THRESHOlD_IO);

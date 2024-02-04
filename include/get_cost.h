@@ -8,9 +8,9 @@ int cost_local(int pos_a_i, int pos_a_j, int pos_b_i, int pos_b_j, int GRID_SIZE
     int diff_j = abs(pos_a_j - pos_b_j);
 
     if (arch == 0) {
-        return (diff_i + diff_j);
+        return max(1, diff_i + diff_j);
     } else if (arch == 1) {
-        return (diff_i/2 + diff_i%2 + diff_j/2 + diff_j%2);
+        return max(1, diff_i/2 + diff_i%2 + diff_j/2 + diff_j%2);
     } 
     return 1000; // error 
 }
