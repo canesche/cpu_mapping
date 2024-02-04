@@ -1,17 +1,7 @@
 set -e
 
 GRAPH=(
-	atax  
-    cholesky  
-    gemm    
-    gesummv  
-    symm  
-    trmm
-    bicg  
-    doitgen   
-    gemver  
-    mvt      
-    syrk
+    h2v2_smooth
 )
 
 ARCH=( # 0 = mesh, 1 = 1-hop, 2 = chess, 3 = hex
@@ -20,16 +10,16 @@ ARCH=( # 0 = mesh, 1 = 1-hop, 2 = chess, 3 = hex
 )
 
 SIZE=(
-    1 
-    10 
-    100 
+    #1 
+    #10 
+    #100 
     1000
 )
 
-PROG=( # 0 = yolt, 1 = yott, 2 = sa
+PROG=( # 0 = yoto, 1 = yott, 2 = sa
     0
     1
-    2
+    #2
 )
 
 # build and constructor the code
@@ -48,12 +38,12 @@ for ((l=0; l < ${#PROG[@]}; l++)) do
         for ((j=0; j < ${#ARCH[@]}; j++)) do
             
             if [ ${ARCH[j]} == 0 ]; then
-                mkdir -p results/yolt/mesh/${SIZE[k]}
+                mkdir -p results/yoto/mesh/${SIZE[k]}
                 mkdir -p results/yott/mesh/${SIZE[k]}
                 mkdir -p results/sa/mesh/${SIZE[k]}
                 echo "ARCH: MESH"
             elif [ ${ARCH[j]} == 1 ]; then
-                mkdir -p results/yolt/1hop/${SIZE[k]}
+                mkdir -p results/yoto/1hop/${SIZE[k]}
                 mkdir -p results/yott/1hop/${SIZE[k]}
                 mkdir -p results/sa/1hop/${SIZE[k]}
                 echo "ARCH: 1HOP"
@@ -62,7 +52,7 @@ for ((l=0; l < ${#PROG[@]}; l++)) do
             for ((i=0; i < ${#GRAPH[@]}; i++)) do
 
                 echo "GRAPH: ${GRAPH[i]}"
-                DOT="bench/lisa/dac/"${GRAPH[i]}".dot"
+                DOT="bench/m_bench/dac/"${GRAPH[i]}".dot"
         
                 # bench ngrids program arch
                 ./build/main $DOT ${SIZE[k]} ${PROG[l]} ${ARCH[j]} 
